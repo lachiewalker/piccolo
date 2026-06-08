@@ -30,18 +30,20 @@ Make sure the test database exists:
 Get the tests running
 ---------------------
 
-* Create a new virtualenv
 * Clone the `Git repo <https://github.com/piccolo-orm/piccolo>`_
 * ``cd piccolo``
-* Install default dependencies: ``pip install -r requirements/requirements.txt``
-* Install development dependencies: ``pip install -r requirements/dev-requirements.txt``
-* Install test dependencies: ``pip install -r requirements/test-requirements.txt``
-* Install database drivers: ``pip install -r requirements/extras/postgres.txt -r requirements/extras/sqlite.txt``
+* Install `uv <https://docs.astral.sh/uv/getting-started/installation/>`_
+* Install development and test dependencies: ``uv sync --group dev --group test``
+* Install database drivers as needed:
+
+  * Postgres: ``uv sync --extra postgres``
+  * SQLite: ``uv sync --extra sqlite``
+
 * Setup Postgres, and make sure a database called ``piccolo`` exists (see ``tests/postgres_conf.py``).
-* Run the automated code linting/formatting tools: ``./scripts/lint.sh``
-* Run the test suite with Postgres: ``./scripts/test-postgres.sh``
-* Run the test suite with Cockroach: ``./scripts/test-cockroach.sh``
-* Run the test suite with Sqlite: ``./scripts/test-sqlite.sh``
+* Run the automated code linting/formatting tools: ``uv run ./scripts/lint.sh``
+* Run the test suite with Postgres: ``uv run ./scripts/test-postgres.sh``
+* Run the test suite with Cockroach: ``uv run ./scripts/test-cockroach.sh``
+* Run the test suite with SQLite: ``uv run ./scripts/test-sqlite.sh``
 
 -------------------------------------------------------------------------------
 
@@ -50,10 +52,10 @@ Contributing to the docs
 
 The docs are written using Sphinx. To get them running locally:
 
-* Install the requirements: ``pip install -r requirements/doc-requirements.txt``
+* Install doc dependencies: ``uv sync --group docs``
 * ``cd docs``
 * Do an initial build of the docs: ``make html``
-* Serve the docs: ``./scripts/run-docs.sh``
+* Serve the docs: ``uv run ./scripts/run-docs.sh``
 * The docs will auto rebuild as you make changes.
 
 -------------------------------------------------------------------------------
@@ -91,6 +93,6 @@ Profiling
 This isn't required to contribute to Piccolo, but is useful when investigating
 performance problems.
 
- * Install the dependencies: ``pip install requirements/profile-requirements.txt``
+ * Install the dependencies: ``uv sync --group profile``
  * Make sure a Postgres database called ``piccolo_profile`` exists.
  * Run ``./scripts/profile.sh`` to get performance data.

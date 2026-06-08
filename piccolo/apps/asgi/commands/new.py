@@ -129,6 +129,6 @@ def new(root: str = ".", name: str = "piccolo_project"):
                 )
 
     print(
-        "Run `pip install -r requirements.txt` and `python main.py` to get "
-        "started."
+        "Run `uv pip install -r requirements.txt` and `uv run python main.py`"
+        " to get started."
     )

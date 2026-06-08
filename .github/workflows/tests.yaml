@@ -24,14 +24,12 @@ jobs:
               uses: actions/setup-python@v5
               with:
                   python-version: ${{ matrix.python-version }}
+            - name: Install uv
+              uses: astral-sh/setup-uv@v8
             - name: Install dependencies
-              run: |
-                  python -m pip install --upgrade pip
-                  pip install -r requirements/requirements.txt
-                  pip install -r requirements/dev-requirements.txt
-                  pip install -r requirements/test-requirements.txt
+              run: uv sync --group dev --group test
             - name: Lint
-              run: ./scripts/lint.sh
+              run: uv run ./scripts/lint.sh
 
     integration:
         runs-on: ubuntu-latest
@@ -60,12 +58,10 @@ jobs:
               uses: actions/setup-python@v5
               with:
                   python-version: ${{ matrix.python-version }}
+            - name: Install uv
+              uses: astral-sh/setup-uv@v8
             - name: Install dependencies
-              run: |
-                  python -m pip install --upgrade pip
-                  pip install -r requirements/requirements.txt
-                  pip install -r requirements/test-requirements.txt
-                  pip install -r requirements/extras/postgres.txt
+              run: uv sync --group test --extra postgres
             - name: Setup postgres
               run: |
                   export PGPASSWORD=postgres
@@ -74,7 +70,7 @@ jobs:
                   psql -h localhost -c "GRANT ALL PRIVILEGES ON DATABASE piccolo TO piccolo;" -U postgres
                   psql -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";" -d piccolo -U postgres
             - name: Run integration tests
-              run: ./scripts/test-integration.sh
+              run: uv run ./scripts/test-integration.sh
               env:
                   PG_HOST: localhost
                   PG_DATABASE: piccolo
@@ -112,12 +108,10 @@ jobs:
               uses: actions/setup-python@v5
               with:
                   python-version: ${{ matrix.python-version }}
+            - name: Install uv
+              uses: astral-sh/setup-uv@v8
             - name: Install dependencies
-              run: |
-                  python -m pip install --upgrade pip
-                  pip install -r requirements/requirements.txt
-                  pip install -r requirements/test-requirements.txt
-                  pip install -r requirements/extras/postgres.txt
+              run: uv sync --group test --extra postgres
             - name: Setup postgres
               run: |
                   export PGPASSWORD=postgres
@@ -127,7 +121,7 @@ jobs:
                   psql -h localhost -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";" -d piccolo -U postgres
 
             - name: Test with pytest, Postgres
-              run: ./scripts/test-postgres.sh
+              run: uv run ./scripts/test-postgres.sh
               env:
                   PG_HOST: localhost
                   PG_DATABASE: piccolo
@@ -149,12 +143,10 @@ jobs:
               uses: actions/setup-python@v5
               with:
                   python-version: ${{ matrix.python-version }}
+            - name: Install uv
+              uses: astral-sh/setup-uv@v8
             - name: Install dependencies
-              run: |
-                  python -m pip install --upgrade pip
-                  pip install -r requirements/requirements.txt
-                  pip install -r requirements/test-requirements.txt
-                  pip install -r requirements/extras/postgres.txt
+              run: uv sync --group test --extra postgres
             - name: Setup CockroachDB
               run: |
                   wget -qO- https://binaries.cockroachdb.com/cockroach-${{ matrix.cockroachdb-version }}.linux-amd64.tgz | tar xz
@@ -162,7 +154,7 @@ jobs:
                   ./cockroach-${{ matrix.cockroachdb-version }}.linux-amd64/cockroach sql --insecure -e 'create database piccolo;'
 
             - name: Test with pytest, CockroachDB
-              run: ./scripts/test-cockroach.sh
+              run: uv run ./scripts/test-cockroach.sh
               env:
                   PG_HOST: localhost
                   PG_DATABASE: piccolo
@@ -183,14 +175,12 @@ jobs:
               uses: actions/setup-python@v5
               with:
                   python-version: ${{ matrix.python-version }}
+            - name: Install uv
+              uses: astral-sh/setup-uv@v8
             - name: Install dependencies
-              run: |
-                  python -m pip install --upgrade pip
-                  pip install -r requirements/requirements.txt
-                  pip install -r requirements/test-requirements.txt
-                  pip install -r requirements/extras/sqlite.txt
+              run: uv sync --group test --extra sqlite
             - name: Test with pytest, SQLite
-              run: ./scripts/test-sqlite.sh
+              run: uv run ./scripts/test-sqlite.sh
             - name: Upload coverage
               uses: codecov/codecov-action@v1
               if: matrix.python-version == '3.13'

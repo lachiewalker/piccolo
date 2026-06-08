@@ -1,6 +1,101 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "piccolo"
+dynamic = ["version"]
+description = "A fast, user friendly ORM and query builder which supports asyncio."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Daniel Townsend", email = "dan@dantownsend.co.uk" }]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Framework :: AsyncIO",
+    "Typing :: Typed",
+    "Topic :: Database",
+]
+dependencies = [
+    "black",
+    "colorama>=0.4.0",
+    "Jinja2>=2.11.0",
+    "targ>=0.3.7",
+    "inflection>=0.5.1",
+    "typing-extensions>=4.3.0",
+    "pydantic[email]>=2,<3",
+]
+
+[project.optional-dependencies]
+orjson     = ["orjson>=3.5.1"]
+postgres   = ["asyncpg>=0.30.0"]
+sqlite     = ["aiosqlite>=0.16.0"]
+uvloop     = ["uvloop>=0.12.0; sys_platform != 'win32'"]
+playground = ["ipython"]
+all        = [
+    "orjson>=3.5.1",
+    "asyncpg>=0.30.0",
+    "aiosqlite>=0.16.0",
+    "uvloop>=0.12.0; sys_platform != 'win32'",
+    "ipython",
+]
+
+[project.scripts]
+piccolo = "piccolo.main:main"
+
+[project.urls]
+Documentation = "https://piccolo-orm.readthedocs.io/en/latest/index.html"
+Source        = "https://github.com/piccolo-orm/piccolo"
+Tracker       = "https://github.com/piccolo-orm/piccolo/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "piccolo.__VERSION__"}
+
+[tool.setuptools.packages.find]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+"*"     = ["templates/*", "templates/**/*", "templates/**/**/*", "templates/**/**/**/*"]
+piccolo = ["py.typed"]
+
+[dependency-groups]
+dev = [
+    "black==26.3.1",
+    "ipdb==0.13.9",
+    "ipython>=7.31.1",
+    "flake8==6.1.0",
+    "isort==5.10.1",
+    "slotscheck==0.17.1",
+    "twine==3.8.0",
+    "mypy==1.18.1",
+    "pyright==1.1.367",
+]
+test = [
+    "coveralls==4.1.0",
+    "httpx==0.28.1",
+    "pytest-cov==7.1.0",
+    "pytest==9.0.3",
+    "python-dateutil==2.9.0",
+    "testcontainers>=4.0.0",
+    "typing-extensions>=4.15.0",
+]
+docs = [
+    "Sphinx==8.2.3; python_version >= '3.11'",
+    "piccolo-theme==0.24.0; python_version >= '3.11'",
+    "sphinx-autobuild==2025.8.25; python_version >= '3.11'",
+]
+profile = ["viztracer==0.15.0"]
+
 [tool.black]
 line-length = 79
-target-version = ['py38', 'py39', 'py310']
+target-version = ['py310', 'py311', 'py312', 'py313']
 
 [tool.isort]
 profile = "black"
@@ -20,7 +115,6 @@ module = [
     "uvicorn"
 ]
 ignore_missing_imports = true
-
 
 [tool.pytest.ini_options]
 markers = [
